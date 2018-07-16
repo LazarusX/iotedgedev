@@ -62,14 +62,19 @@ def main(set_config, az_cli=None):
               help="Creates a new Azure IoT Edge Solution. Use `--create .` to create in current folder. Use `--create TEXT` to create in a subfolder.")
 @click.argument("name", required=False)
 @click.option('--module',
-              required=True,
+              required=False,
+              envvar=envvars.get_envvar_key_if_val("DEFAULT_MODULE_NAME"),
+              default=envvars.DEFAULT_MODULE_NAME,
+              show_default=True,
               help="Specify the name of the default IoT Edge module.")
 @click.option("--template",
               default="csharp",
+              show_default=True,
               required=False,
               type=click.Choice(["csharp", "nodejs", "python", "csharpfunction"]),
               help="Specify the template used to create the default IoT Edge module.")
 def solution(create, name, module, template):
+    print("module is " + envvars.DEFAULT_MODULE_NAM)
 
     utility = Utility(envvars, output)
     sol = Solution(output, utility)
@@ -86,7 +91,7 @@ def init(ctx):
     utility = Utility(envvars, output)
 
     if len(os.listdir(os.getcwd())) == 0:
-        solcmd = "iotedgedev solution . --module filtermodule"
+        solcmd = "iotedgedev solution ."
         output.header(solcmd)
         utility.call_proc(solcmd.split())
 
